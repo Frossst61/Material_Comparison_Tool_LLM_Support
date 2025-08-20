@@ -12,20 +12,21 @@ def check_model_status():
     print("🔍 Checking Model Setup Status")
     print("=" * 50)
     
-    # Check for model in project root
+    # Check for model in models directory (preferred location)
     model_name = 'paraphrase-multilingual-MiniLM-L12-v2'
-    root_model_path = Path(model_name)
+    models_dir = Path('models')
+    model_path = models_dir / model_name
     
-    if root_model_path.exists():
-        print(f"✅ Found model folder in project root: {root_model_path}")
+    if model_path.exists():
+        print(f"✅ Found model folder in models directory: {model_path}")
         
         # Check for key files
         key_files = ['model.safetensors', 'config.json', 'modules.json']
         missing_files = []
         
         for file_name in key_files:
-            if (root_model_path / file_name).exists():
-                size = (root_model_path / file_name).stat().st_size / (1024*1024)
+            if (model_path / file_name).exists():
+                size = (model_path / file_name).stat().st_size / (1024*1024)
                 print(f"  ✅ {file_name} ({size:.1f} MB)")
             else:
                 missing_files.append(file_name)
@@ -39,9 +40,17 @@ def check_model_status():
             print(f"\n✅ Model appears complete!")
             return True
     else:
-        print(f"❌ Model folder not found: {root_model_path}")
-        print("   Expected location: ./paraphrase-multilingual-MiniLM-L12-v2/")
-        return False
+        # Check project root for backward compatibility
+        root_model_path = Path(model_name)
+        if root_model_path.exists():
+            print(f"⚠️  Found model in project root: {root_model_path}")
+            print("   Consider moving it to models/ directory for better organization")
+            return True
+        else:
+            print(f"❌ Model folder not found in either location:")
+            print(f"   Preferred: ./models/{model_name}/")
+            print(f"   Legacy: ./{model_name}/")
+            return False
 
 def show_setup_instructions():
     """Show setup instructions"""
@@ -50,10 +59,13 @@ def show_setup_instructions():
     print("=" * 60)
     
     print("\nTo complete the setup, you need to:")
-    print("\n1️⃣  Create the model folder:")
-    print("   mkdir paraphrase-multilingual-MiniLM-L12-v2")
+    print("\n1️⃣  Use the download script (recommended):")
+    print("   python download_model.py")
     
-    print("\n2️⃣  Download these files into that folder:")
+    print("\n2️⃣  Or create the model folder manually:")
+    print("   mkdir -p models/paraphrase-multilingual-MiniLM-L12-v2")
+    
+    print("\n3️⃣  Download these files into models/paraphrase-multilingual-MiniLM-L12-v2/:")
     print("   • config.json")
     print("   • config_sentence_transformers.json") 
     print("   • sentence_bert_config.json")
@@ -61,13 +73,12 @@ def show_setup_instructions():
     print("   • model.safetensors (471MB) ← MOST IMPORTANT")
     print("   • tokenizer files")
     
-    print("\n3️⃣  Get files from:")
+    print("\n4️⃣  Get files from:")
     print("   • HuggingFace: https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-    print("   • Direct links in MANUAL_MODEL_SETUP.md")
-    print("   • Git clone (if you have git-lfs)")
+    print("   • Or run: python setup_offline_model.py")
     
-    print("\n4️⃣  Verify with:")
-    print("   python test_root_model.py")
+    print("\n5️⃣  Verify with:")
+    print("   python test.py  # Will automatically detect models in models/ folder")
 
 def demo_current_capabilities():
     """Demo what works right now"""

@@ -99,5 +99,6 @@ if __name__ == "__main__":
             f.write(f"model_name={model_name}\n")
             f.write(f"model_path={model_path}\n")
         print(f"\n📄 Model configuration saved to: {config_path}")
+        print(f"✅ Model is properly organized in the models/ directory")
     else:
         print("\n❌ All model downloads failed. Please check your internet connection and try again.")

@@ -1,0 +1,6 @@
+Material_ID_File1;Material_Name_File1;Material_ID_File2;Material_Name_File2;Similarity_Coefficient;Matching_Method
+M001;Steel Grade 304;MAT_A;Stainless Steel 304;0.5294117647058824;difflib
+M002;Aluminum Alloy 6061;MAT_B;Aluminium 6061-T6;0.7222222222222222;difflib
+M003;Copper C101;MAT_C;Pure Copper;0.5454545454545454;difflib
+M004;Stainless Steel 316;MAT_A;Stainless Steel 304;0.8947368421052632;difflib
+M005;Carbon Steel;MAT_E;Carbon Steel A36;0.8571428571428571;difflib

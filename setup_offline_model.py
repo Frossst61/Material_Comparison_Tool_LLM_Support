@@ -29,17 +29,17 @@ Due to network connectivity issues, you can manually set up models for offline u
    python -c "
    from sentence_transformers import SentenceTransformer
    model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
-   model.save('./paraphrase-multilingual-MiniLM-L12-v2_local')
-   print('Model saved to paraphrase-multilingual-MiniLM-L12-v2_local')
+   model.save('./models/paraphrase-multilingual-MiniLM-L12-v2')
+   print('Model saved to models/paraphrase-multilingual-MiniLM-L12-v2')
    "
    ```
 
-2. Copy the entire `paraphrase-multilingual-MiniLM-L12-v2_local` folder to this project's `models/` directory
+2. The model will be saved directly to the `models/` directory
 
 3. Create a config file:
    ```
    echo "model_name=paraphrase-multilingual-MiniLM-L12-v2" > models/local_model_config.txt
-   echo "model_path=models/paraphrase-multilingual-MiniLM-L12-v2_local" >> models/local_model_config.txt
+   echo "model_path=models/paraphrase-multilingual-MiniLM-L12-v2" >> models/local_model_config.txt
    ```
 
 ## Option 2: Use a smaller fallback model
@@ -48,12 +48,12 @@ Due to network connectivity issues, you can manually set up models for offline u
    python -c "
    from sentence_transformers import SentenceTransformer
    model = SentenceTransformer('all-MiniLM-L6-v2')
-   model.save('./all-MiniLM-L6-v2_local')
-   print('Model saved to all-MiniLM-L6-v2_local')
+   model.save('./models/all-MiniLM-L6-v2')
+   print('Model saved to models/all-MiniLM-L6-v2')
    "
    ```
 
-2. Copy to models directory and create config as above
+2. Create config file as above
 
 ## Option 3: Use HuggingFace Hub cache
 If you've previously downloaded models, they might be in your HuggingFace cache:
@@ -114,12 +114,12 @@ def test_local_model():
         except Exception as e:
             print(f"❌ Error testing local model: {e}")
     
-    # Check for common model directories
+    # Check for common model directories in models folder
     potential_models = [
-        'paraphrase-multilingual-MiniLM-L12-v2_local',
         'paraphrase-multilingual-MiniLM-L12-v2',
-        'all-MiniLM-L6-v2_local',
-        'all-MiniLM-L6-v2'
+        'all-MiniLM-L6-v2',
+        'paraphrase-multilingual-MiniLM-L12-v2_local',
+        'all-MiniLM-L6-v2_local'
     ]
     
     for model_name in potential_models:

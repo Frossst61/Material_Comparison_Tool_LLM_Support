@@ -35,21 +35,9 @@ class LLMMaterialMatcher:
         self._load_model()
     
     def _load_model(self):
-        """Load the sentence transformer model (project root first, then local dir, then online)"""
+        """Load the sentence transformer model (models directory first, then online)"""
         
-        # Priority 1: Check project root for model (direct folder)
-        root_model_path = self.model_name.replace('/', '_')
-        if os.path.exists(root_model_path):
-            try:
-                print(f"🔄 Loading model from project root: {root_model_path}")
-                self.model = SentenceTransformer(root_model_path)
-                self.is_offline = True
-                print("✅ Project root model loaded successfully! (Offline mode)")
-                return
-            except Exception as e:
-                print(f"⚠️  Failed to load model from project root: {e}")
-        
-        # Priority 2: Check if we have a local model configuration
+        # Priority 1: Check if we have a local model configuration in models directory
         local_config_path = os.path.join(self.local_models_dir, 'local_model_config.txt')
         local_model_path = None
         
@@ -65,7 +53,7 @@ class LLMMaterialMatcher:
             except Exception as e:
                 print(f"Warning: Could not read local model config: {e}")
         
-        # Priority 3: Try to find local model by name in models directory
+        # Priority 2: Try to find local model by name in models directory
         if not local_model_path:
             potential_local_path = os.path.join(self.local_models_dir, self.model_name.replace('/', '_'))
             if os.path.exists(potential_local_path):
@@ -84,6 +72,20 @@ class LLMMaterialMatcher:
                 print(f"⚠️  Failed to load local model: {e}")
                 print("🔄 Falling back to online download...")
         
+        # Priority 3: Check project root for backward compatibility (deprecated)
+        root_model_path = self.model_name.replace('/', '_')
+        if os.path.exists(root_model_path):
+            try:
+                print(f"⚠️  Found model in project root: {root_model_path}")
+                print(f"   Consider moving it to models/ directory for better organization")
+                print(f"🔄 Loading model from project root: {root_model_path}")
+                self.model = SentenceTransformer(root_model_path)
+                self.is_offline = True
+                print("✅ Project root model loaded successfully! (Offline mode)")
+                return
+            except Exception as e:
+                print(f"⚠️  Failed to load model from project root: {e}")
+        
         # Priority 4: Fall back to online download
         try:
             print(f"🔄 Downloading model online: {self.model_name}")
@@ -93,9 +95,8 @@ class LLMMaterialMatcher:
         except Exception as e:
             print(f"❌ Error loading model (all methods failed): {e}")
             print("\n💡 To use offline models:")
-            print("   1. Place model folder directly in project root, OR")
-            print("   2. Run 'python download_model.py' when you have internet, OR")
-            print("   3. Follow MANUAL_MODEL_SETUP.md for manual setup")
+            print("   1. Run 'python download_model.py' when you have internet, OR")
+            print("   2. Follow setup instructions to manually place models in models/ directory")
             raise
     
     def encode_materials(self, materials: List[str]) -> np.ndarray:
